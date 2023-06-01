@@ -112,13 +112,8 @@ public class User {
     }
 
     // Returns the combination of getFoods() and getToys().
-    public String getInventory(Shop shop) {
-        String str = "";
-
-        str += getFoods(shop);
-        str += getToys(shop);
-
-        return str;
+    public HashMap<String, Integer> getInventory() {
+        return this.inventory;
     }
 
     // Returns all the Food objects inside of the inventory.

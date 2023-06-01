@@ -24,7 +24,7 @@ public class Shop {
         items.put("pizza", new Food("Pizza", 12, 3));
         items.put("salad", new Food("Salad", 5, 1));
 
-        items.put("playing cards", new Toy("Playing Cards", 4, 2, 1));
+        items.put("playing cards", new Toy("Playing Cards", 8, 2, 1));
         items.put("joystation", new Toy("JoyStation", 50, 8, 3));
         items.put("ball", new Toy("Ball", 12, 3, 2));
     }

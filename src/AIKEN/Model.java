@@ -9,5 +9,9 @@ package AIKEN;
  * @author hunub
  */
 public class Model {
+    private Database db;
+    private User user;
+    private Pet pet;
+    
     
 }

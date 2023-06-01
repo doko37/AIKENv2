@@ -1,0 +1,31 @@
+Thu Jun 01 16:16:51 NZST 2023 : Apache Derby Network Server - 10.14.2.0 - (1828579) started and ready to accept connections on port 1527
+----------------------------------------------------------------
+Thu Jun 01 16:16:52 NZST 2023:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-0188-752c-3589-0000378bb641 
+on database directory C:\Users\hunub\OneDrive\Documents\NetBeansProjects\AIKENv2\AIKEN with class loader sun.misc.Launcher$AppClassLoader@1d44bcfa 
+Loaded from file:/C:/Users/hunub/Downloads/db-derby-10.14.2.0-bin/db-derby-10.14.2.0-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_202-b08
+user.dir=C:\Users\hunub\Downloads\db-derby-10.14.2.0-bin\db-derby-10.14.2.0-bin
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=C:\Users\hunub\OneDrive\Documents\NetBeansProjects\AIKENv2
+Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Thu Jun 01 16:16:52 NZST 2023:
+Shutting down instance a816c00e-0188-752c-3589-0000378bb641 on database directory C:\Users\hunub\OneDrive\Documents\NetBeansProjects\AIKENv2\AIKEN with class loader sun.misc.Launcher$AppClassLoader@1d44bcfa 
+Thu Jun 01 16:16:52 NZST 2023 Thread[DRDAConnThread_3,5,main] (DATABASE = AIKEN), (DRDAID = {2}), Database 'AIKEN' shutdown.
+----------------------------------------------------------------
+Thu Jun 01 16:16:57 NZST 2023:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance 6ede40af-0188-752c-3589-0000378bb641 
+on database directory C:\Users\hunub\OneDrive\Documents\NetBeansProjects\AIKENv2\AIKEN with class loader sun.misc.Launcher$AppClassLoader@1d44bcfa 
+Loaded from file:/C:/Users/hunub/Downloads/db-derby-10.14.2.0-bin/db-derby-10.14.2.0-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_202-b08
+user.dir=C:\Users\hunub\Downloads\db-derby-10.14.2.0-bin\db-derby-10.14.2.0-bin
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=C:\Users\hunub\OneDrive\Documents\NetBeansProjects\AIKENv2
+Database Class Loader started - derby.database.classpath=''

@@ -66,8 +66,8 @@ class PrintRunnable implements Runnable {
                 if (game.state == GameState.INVENTORY) {
                     synchronized (this) {
                         try {
-                            System.out.println("\n\n======INVENTORY======\n\n" + user.getInventory(game.shop));
-                            if (user.getInventory(game.shop).isEmpty())
+//                            System.out.println("\n\n======INVENTORY======\n\n" + user.getInventory(game.shop));
+//                            if (user.getInventory(game.shop).isEmpty())
                                 System.out.println("Your Inventory is empty!");
                             System.out.println("Press enter to exit your inventory.");
                             wait();
