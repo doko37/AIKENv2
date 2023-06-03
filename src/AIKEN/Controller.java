@@ -16,13 +16,23 @@ public class Controller implements ActionListener {
     public Model model;
     
     
-    public Controller(View view) {
+    public Controller(View view, Model model) {
         this.view = view;
+        this.model = model;
         this.view.addActionListener(this);
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
         
+        switch(command) {
+            case "Continue Game":
+                model.getUserData(view.uInput.getText());
+                break;
+            case "New Game":
+                model.newUser(view.uInput.getText());
+                break;
+        }
     }
 }

@@ -14,19 +14,8 @@ import java.util.Map;
 public class Shop {
     private HashMap<String, Item> items;
 
-    public Shop() {
-        items = new HashMap<>();
-    }
-
-    // Stock the shop with default items.
-    public void stock() {
-        items.put("hamburger", new Food("Hamburger", 8, 2));
-        items.put("pizza", new Food("Pizza", 12, 3));
-        items.put("salad", new Food("Salad", 5, 1));
-
-        items.put("playing cards", new Toy("Playing Cards", 8, 2, 1));
-        items.put("joystation", new Toy("JoyStation", 50, 8, 3));
-        items.put("ball", new Toy("Ball", 12, 3, 2));
+    public Shop(HashMap<String, Item> items) {
+        this.items = items;
     }
 
     // Manually add an item to the shop

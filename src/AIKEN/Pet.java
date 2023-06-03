@@ -5,7 +5,7 @@
 
 package AIKEN;
 
-import AIKEN.Game.GameState;
+import AIKEN.Data.GameState;
 
 // This class represents the pet in the game.
 // A pet is a Thread that continously runs throughout the game and changes its attributes based on its current status.
@@ -13,25 +13,26 @@ import AIKEN.Game.GameState;
 // The hunger, happiness and health values determine the pet's state.
 // Once a pet's health value reaches 0, it dies.
 public class Pet extends Thread {
-    private static final int MAX_VALUE = 10;
+    private static final int MAX_VALUE = 100;
     boolean isAlive;
     private int hunger, happiness, health;
     private GameState state;
     private String name;
+    Model model;
 
     // Default parameter used when starting a new game
     public Pet(String name) {
-        hunger = 5;
-        happiness = 5;
-        health = 5;
+        hunger = 50;
+        happiness = 50;
+        health = 50;
         isAlive = true;
-        this.state = GameState.MAIN;
+        this.state = GameState.MAIN_MENU;
         this.name = name;
     }
 
     // Second parameter used when loading a saved game.
     public Pet(String name, int hunger, int happiness, int health) {
-        this.state = GameState.MAIN;
+        this.state = GameState.MAIN_MENU;
         this.name = name;
         this.hunger = hunger;
         this.happiness = happiness;
@@ -59,11 +60,11 @@ public class Pet extends Thread {
                 
                 Thread.sleep(10 * 1000);
                 
-                if (state == GameState.TERMINATED) {
+                if (state == GameState.QUIT) {
                     break;
                 }
 
-                if (state != GameState.MAIN) {
+                if (state != GameState.MAIN_MENU) {
                     synchronized (this) {
                         try {
                             wait();
@@ -73,21 +74,23 @@ public class Pet extends Thread {
                     }
                 }
 
-                if (health < 3) {
-                    happiness -= 2;
+                if (health < 30) {
+                    happiness -= 6;
                 } else if (health < 6) {
-                    happiness--;
+                    happiness -= 3;
                 }
 
-                if (hunger < 3 || happiness < 3) {
-                    health -= 2;
-                } else if (hunger < 6 || happiness < 6) {
-                    health--;
-                } else if (health < 10) {
-                    health++;
+                if (hunger < 30 || happiness < 30) {
+                    health -= 6;
+                } else if (hunger < 60 || happiness < 60) {
+                    health -= 3;
+                } else if (health < 100) {
+                    health += 10;
+                    if(health > 100) 
+                        health = 100;
                 }
 
-                hunger--;
+                hunger -= 5;
                 if(health < 0) {
                     health = 0;
                 }
@@ -95,6 +98,8 @@ public class Pet extends Thread {
                 if(hunger < 0) {
                     hunger = 0;
                 }
+                
+                model.updatePetStatus();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -103,16 +108,16 @@ public class Pet extends Thread {
 
     public void feed(Food food) {
         hunger += food.getRestoreLevel();
-        if(hunger >= 10) {
-            hunger = 10;
+        if(hunger > 100) {
+            hunger = 100;
         }
     }
 
     public void play(Toy toy) {
         happiness += toy.getFunLevel();
         hunger -= toy.getTiringLevel();
-        if(happiness >= 10)
-            happiness = 10;
+        if(happiness > 100)
+            happiness = 100;
         
         if(hunger < 0) {
             hunger = 0;
@@ -124,7 +129,7 @@ public class Pet extends Thread {
     // The pet's state is based on its lowest value, e.g. if the lowest value is hunger and the value is 4, then return "( o ~ o )" which is the state for slightly hungry.
     @Override
     public String toString() {
-        int min = 10;
+        int min = 100;
         if (min > hunger)
             min = hunger;
         if (min > happiness)
@@ -132,7 +137,7 @@ public class Pet extends Thread {
         if (min > health)
             min = health;
 
-        if (min <= 3) {
+        if (min <= 30) {
             if (hunger == min) {
                 return "( > 3 < )";
             } else if (happiness == min) {
@@ -140,7 +145,7 @@ public class Pet extends Thread {
             } else {
                 return "( x o x )";
             }
-        } else if (min >= 4 && min <= 6) {
+        } else if (min >= 40 && min <= 60) {
             if (hunger == min) {
                 return "( o ~ o )";
             } else if (happiness == min) {

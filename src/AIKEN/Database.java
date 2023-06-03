@@ -23,49 +23,49 @@ public class Database {
     Connection conn = null;
     String username = "pdc";
     String password = "pdc";
-    String url = "jdbc:derby:AIKEN; create=true";
+    String url = "jdbc:derby:AIKENDB; create=true";
     
     public void dbSetup() {
         try {
             this.conn = DriverManager.getConnection(url, username, password);
             try(Statement stmt = conn.createStatement()) {
-                String tableUser = "User";
+                String tableUser = "UserInfo";
                 String tablePet = "Pet";
                 String tableShop = "Shop";
                 String tableInventory = "Inventory";
 
                 if(!tableExists(tableUser)) {
-                    stmt.executeUpdate("CREATE TABLE" + tableUser + "(PET_NAME VARCHAR(40), MONEY INT, PRIMARY KEY (PET_NAME))");
+                    stmt.executeUpdate("CREATE TABLE " + tableUser + " (PET_NAME VARCHAR(40), MONEY INT, PRIMARY KEY (PET_NAME))");
                 }
 
                 if(!tableExists(tablePet)) {
-                    stmt.executeUpdate("CREATE TABLE" + tablePet + "(NAME VARCHAR(40), HUNGER INT, HAPPINESS INT, HEALTH INT, FOREIGN KEY (NAME) REFERENCES User(PET_NAME))");
+                    stmt.executeUpdate("CREATE TABLE " + tablePet + " (NAME VARCHAR(40), HUNGER INT, HAPPINESS INT, HEALTH INT, FOREIGN KEY (NAME) REFERENCES UserInfo(PET_NAME))");
                 }
 
                 if(!tableExists(tableShop)) {
-                    stmt.executeUpdate("CREATE TABLE" + tableShop + "(ITEM_NAME VARCHAR(30), PRICE INT, RESTORATION INT, HUNGER_LOSS INT, TYPE VARCHAR(10), PRIMARY KEY (NAME))");
+                    stmt.executeUpdate("CREATE TABLE " + tableShop + " (ITEM_NAME VARCHAR(30), PRICE INT, RESTORATION INT, HUNGER_LOSS INT, ITEM_TYPE VARCHAR(10), PRIMARY KEY (ITEM_NAME))");
                     stockShop();
                 }
 
                 if(!tableExists(tableInventory)) {
-                    stmt.executeUpdate("CREATE TABLE" + tableInventory + "(PET_NAME VARCHAR(40), ITEM_NAME VARCHAR(30), AMOUNT INT, FOREIGN KEY(ITEM_NAME) REFERENCES Shop(ITEM_NAME)), FOREIGN KEY(PET_NAME) REFERENCES User(PET_NAME))");
+                    stmt.executeUpdate("CREATE TABLE " + tableInventory + " (PET_NAME VARCHAR(40), ITEM_NAME VARCHAR(30), AMOUNT INT, FOREIGN KEY(ITEM_NAME) REFERENCES Shop(ITEM_NAME), FOREIGN KEY(PET_NAME) REFERENCES UserInfo(PET_NAME))");
                 }
 
                 stmt.close();
             }          
         } catch(SQLException e) {
-            
+            System.out.println(e);
         }
     }
     
-    public User getUserInfo(String petName) {
+    public User getUserData(String petName) {
         User user = null;
         Pet pet = null;
         int money = 0;
         
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT User.PET_NAME, User.MONEY, Pet.HUNGER, Pet.HAPPINESS, Pet.HEALTH FROM User, Pet WHERE User.PET_NAME = Pet.NAME AND User.PET_NAME = " + petName);
+            ResultSet rs = stmt.executeQuery("SELECT UserInfo.PET_NAME, UserInfo.MONEY, Pet.HUNGER, Pet.HAPPINESS, Pet.HEALTH FROM UserInfo, Pet WHERE UserInfo.PET_NAME = Pet.NAME AND UserInfo.PET_NAME = " + petName);
             if(rs.next()) {
                 pet = new Pet(petName, rs.getInt("HUNGER"), rs.getInt("HAPPINESS"), rs.getInt("HEALTH"));
                 money = rs.getInt("MONEY");
@@ -111,7 +111,7 @@ public class Database {
     public void quitGame(User user, Pet pet) {
         try {
             Statement statement = conn.createStatement();
-            statement.addBatch("UPDATE User SET MONEY = " + user.getMoney() + " WHERE PET_NAME = " + pet.getPetName());
+            statement.addBatch("UPDATE UserInfo SET MONEY = " + user.getMoney() + " WHERE PET_NAME = " + pet.getPetName());
             statement.addBatch("UPDATE Pet SET HUNGER = " + pet.getHunger() + ", HAPPINESS = " + pet.getHappiness() + ", HEALTH = " + pet.getHealth() + " WHERE NAME = " + pet.getPetName());
             for(Map.Entry<String, Integer> entry : user.getInventory().entrySet()) {
                 statement.addBatch("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES (" + pet.getPetName() + ", " + entry.getKey() + ", " + entry.getValue() + ")");
@@ -126,7 +126,7 @@ public class Database {
     private void stockShop() {
         try {
             Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Shop VALUES ('Hamburger', 8, 2, null, 'food'), ('Pizza', 14, 4, null, 'food'), ('Salad', 5, 1, null 'food'), " +
+            stmt.execute("INSERT INTO Shop VALUES ('Hamburger', 8, 2, null, 'food'), ('Pizza', 14, 4, null, 'food'), ('Salad', 5, 1, null, 'food'), " +
                     "('Cards', 8, 2, 1, 'toy'), ('Joystation', 45, 8, 3, 'toy'), ('Ball', 14, 3, 2, 'toy')");
         } catch(SQLException e) {
             

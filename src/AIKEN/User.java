@@ -8,7 +8,7 @@ package AIKEN;
 import java.util.HashMap;
 import java.util.Map;
 
-import AIKEN.Game.GameState;
+import AIKEN.Data.GameState;
 
 // This class represents the user.
 // A user holds 3 attributes: the pet, money, and an inventory.
