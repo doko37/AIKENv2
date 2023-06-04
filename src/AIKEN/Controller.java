@@ -4,6 +4,7 @@
  */
 package AIKEN;
 
+import AIKEN.Data.GameState;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,6 +23,10 @@ public class Controller implements ActionListener {
         this.view.addActionListener(this);
     }
     
+    public void addItemsToListener() {
+        this.view.addItemsToListener(this);
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
@@ -29,9 +34,20 @@ public class Controller implements ActionListener {
         switch(command) {
             case "Continue Game":
                 model.getUserData(view.uInput.getText());
+                addItemsToListener();
                 break;
             case "New Game":
                 model.newUser(view.uInput.getText());
+                addItemsToListener();
+                break;
+            case "Shop":
+                model.changeGameState(GameState.SHOP);
+                break;
+            case "Go Back":
+                model.changeGameState(GameState.MAIN_MENU);
+            default:
+                model.useItem(command.split(" ")[0]);
+                addItemsToListener();
                 break;
         }
     }

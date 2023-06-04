@@ -58,7 +58,7 @@ public class Pet extends Thread {
                 if (health <= 0)
                     isAlive = false;
                 
-                Thread.sleep(10 * 1000);
+                Thread.sleep(3 * 1000);
                 
                 if (state == GameState.QUIT) {
                     break;

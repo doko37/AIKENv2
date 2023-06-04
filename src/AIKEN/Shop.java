@@ -26,6 +26,10 @@ public class Shop {
     public Item get(String name) {
         return items.getOrDefault(name.toLowerCase(), null);
     }
+    
+    public HashMap<String, Item> getItems() {
+        return this.items;
+    }
 
     public String toString() {
         String str = "";

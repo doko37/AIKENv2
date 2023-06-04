@@ -89,20 +89,25 @@ public class Database {
     }
     
     public HashMap<String, Item> getShopItems() {
-        HashMap<String, Item> shopItems = null;
+        HashMap<String, Item> shopItems = new HashMap<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM Shop");
             while(rs.next()) {
-                String type = rs.getString("TYPE");
+                String type = rs.getString("ITEM_TYPE");
                 if(type.equals("toy")) {
-                    shopItems.put(rs.getString("ITEM_NAME").toLowerCase(), new Toy(rs.getString("ITEM_NAME"), rs.getInt("PRICE"), rs.getInt("RESTORATION"), rs.getInt("HUGNER_LOSS")));
+                    shopItems.put(rs.getString("ITEM_NAME").toLowerCase(), new Toy(rs.getString("ITEM_NAME"), rs.getInt("PRICE"), rs.getInt("RESTORATION"), rs.getInt("HUNGER_LOSS")));
                 } else if(type.equals("food")) {
-                    shopItems.put(rs.getString("ITEM_NAME").toLowerCase(), new Food(rs.getString("ITEM_NAME"), rs.getInt("PRICE"), rs.getInt("RESTORATION")));
+                    //shopItems.put(rs.getString("ITEM_NAME").toLowerCase(), new Food(rs.getString("ITEM_NAME"), rs.getInt("PRICE"), rs.getInt("RESTORATION")));
+                    String name = rs.getString("ITEM_NAME");
+                    int price = rs.getInt("PRICE");
+                    int restoration = rs.getInt("RESTORATION");
+                    
+                    shopItems.put(name.toLowerCase(), new Food(name, price, restoration));
                 }
             }
         } catch(SQLException e) {
-            
+            return null;
         }
         
         return shopItems;
@@ -126,8 +131,8 @@ public class Database {
     private void stockShop() {
         try {
             Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Shop VALUES ('Hamburger', 8, 2, null, 'food'), ('Pizza', 14, 4, null, 'food'), ('Salad', 5, 1, null, 'food'), " +
-                    "('Cards', 8, 2, 1, 'toy'), ('Joystation', 45, 8, 3, 'toy'), ('Ball', 14, 3, 2, 'toy')");
+            stmt.execute("INSERT INTO Shop VALUES ('Burger', 8, 2, null, 'food'), ('Pizza', 14, 4, null, 'food'), ('Sushi', 5, 1, null, 'food'), " +
+                    "('Cube', 8, 2, 1, 'toy'), ('Joyboy', 45, 8, 3, 'toy'), ('Ball', 14, 3, 2, 'toy')");
         } catch(SQLException e) {
             
         }

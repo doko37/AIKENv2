@@ -15,10 +15,14 @@ public class Data {
         INVENTORY,
         SHOP,
         CASINO,
-        QUIT
+        QUIT,
+        PET_DIED
     }
     
     GameState gameState;
     User user;
     boolean newGame;
+    boolean save;
+    boolean autoRefresh;
+    Shop shop;
 }

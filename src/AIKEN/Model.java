@@ -14,13 +14,12 @@ import java.util.Observable;
 public class Model extends Observable {
     private Database db;
     private Data data;
-    private Shop shop;
     
     public Model() {
         this.db = new Database();
         this.db.dbSetup();
         this.data = new Data();
-        this.shop = new Shop(db.getShopItems());
+        this.data.shop = new Shop(db.getShopItems());
         this.data.gameState = GameState.STARTING_SCREEN;
     }
     
@@ -60,6 +59,19 @@ public class Model extends Observable {
         startGame();
     }
     
+    public void useItem(String itemName) {
+        Item item = data.shop.get(itemName);
+        if(item instanceof Food) {
+            data.user.feed(itemName, data.shop);
+        } else {
+            data.user.play(itemName, data.shop);
+        }
+        
+        this.data.autoRefresh = false;
+        setChanged();
+        notifyObservers(data);
+    }
+    
     public void startGame() {
         this.data.gameState = GameState.MAIN_MENU;
         setChanged();
@@ -67,6 +79,22 @@ public class Model extends Observable {
     }
     
     public void updatePetStatus() {
+        this.data.autoRefresh = true;
+        if(!data.user.getPet().isAlive) {
+            data.gameState = GameState.PET_DIED;
+        }
+        setChanged();
+        notifyObservers(data);
+    }
+    
+    public void changeGameState(GameState gameState) {
+        this.data.user.getPet().setState(gameState);
+        if(gameState == GameState.MAIN_MENU) {
+            synchronized (this.data.user.getPet()) {
+                this.data.user.getPet().notify();
+            }
+        } 
+        this.data.gameState = gameState;
         setChanged();
         notifyObservers(data);
     }
