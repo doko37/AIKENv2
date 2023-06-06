@@ -10,8 +10,8 @@ package AIKEN;
  */
 public class AIKENMain {
     public static void main(String args[]) {
-        View view = new View();
         Model model = new Model();
+        View view = new View(model);
         Controller controller = new Controller(view, model);
         model.addObserver(view);
     }

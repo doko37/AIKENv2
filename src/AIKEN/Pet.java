@@ -16,7 +16,7 @@ public class Pet extends Thread {
     private static final int MAX_VALUE = 100;
     boolean isAlive;
     private int hunger, happiness, health;
-    private GameState state;
+    public GameState state;
     private String name;
     Model model;
 
@@ -43,6 +43,10 @@ public class Pet extends Thread {
     public void setState(GameState state) {
         this.state = state;
     }
+    
+    public void takeDamage(int health) {
+        this.health -= health;
+    }
 
     // While the pet is alive, every 10 seconds:
     // If health is below 3, reduce happiness by 2, and if health is below 6 reduce happiness by 1,
@@ -58,8 +62,6 @@ public class Pet extends Thread {
                 if (health <= 0)
                     isAlive = false;
                 
-                Thread.sleep(3 * 1000);
-                
                 if (state == GameState.QUIT) {
                     break;
                 }
@@ -73,6 +75,8 @@ public class Pet extends Thread {
                         }
                     }
                 }
+                
+                Thread.sleep(10 * 1000);
 
                 if (health < 30) {
                     happiness -= 6;

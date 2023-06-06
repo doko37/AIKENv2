@@ -131,8 +131,8 @@ public class Database {
     private void stockShop() {
         try {
             Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Shop VALUES ('Burger', 8, 2, null, 'food'), ('Pizza', 14, 4, null, 'food'), ('Sushi', 5, 1, null, 'food'), " +
-                    "('Cube', 8, 2, 1, 'toy'), ('Joyboy', 45, 8, 3, 'toy'), ('Ball', 14, 3, 2, 'toy')");
+            stmt.execute("INSERT INTO Shop VALUES ('Burger', 20, 14, null, 'food'), ('Pizza', 16, 10, null, 'food'), ('Sushi', 9, 6, null, 'food'), " +
+                    "('Cube', 14, 7, 1, 'toy'), ('Joyboy', 50, 30, 3, 'toy'), ('Ball', 9, 5, 2, 'toy')");
         } catch(SQLException e) {
             
         }

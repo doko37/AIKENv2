@@ -14,7 +14,7 @@ import AIKEN.Data.GameState;
 // A user holds 3 attributes: the pet, money, and an inventory.
 // The pet is an instance of the Pet class. Money is an integer, and the inventory is a HashMap with the name of an item as the key and the amount of that item being the value.
 public class User {
-    private final int INITIAL_MONEY = 50;
+    private final int INITIAL_MONEY = 100;
     private Pet pet;
     private int money;
     private HashMap<String, Integer> inventory;
@@ -23,8 +23,8 @@ public class User {
         this.pet = pet;
         this.money = INITIAL_MONEY;
         inventory = new HashMap<>();
-        inventory.put("pizza", 1);
-        inventory.put("ball", 1);
+        inventory.put("pizza", 2);
+        inventory.put("ball", 2);
     }
 
     public User(Pet pet, int money, HashMap<String, Integer> inventory) {

@@ -14,7 +14,7 @@ public class Data {
         MAIN_MENU,
         INVENTORY,
         SHOP,
-        CASINO,
+        ADVENTURE,
         QUIT,
         PET_DIED
     }
@@ -24,5 +24,6 @@ public class Data {
     boolean newGame;
     boolean save;
     boolean autoRefresh;
+    boolean broke;
     Shop shop;
 }

@@ -72,6 +72,13 @@ public class Model extends Observable {
         notifyObservers(data);
     }
     
+    public void buyItem(String itemName) {
+        data.broke = !data.user.buyItem(itemName, data.shop);
+        data.autoRefresh = false;
+        setChanged();
+        notifyObservers(data);
+    }
+    
     public void startGame() {
         this.data.gameState = GameState.MAIN_MENU;
         setChanged();
@@ -95,6 +102,19 @@ public class Model extends Observable {
             }
         } 
         this.data.gameState = gameState;
+        data.autoRefresh = false;
+        setChanged();
+        notifyObservers(data);
+    }
+    
+    public void addCoin() {
+        data.user.setMoney(data.user.getMoney() + 10);
+        setChanged();
+        notifyObservers(data);
+    }
+    
+    public void takeDamage() {
+        data.user.getPet().takeDamage(5);
         setChanged();
         notifyObservers(data);
     }

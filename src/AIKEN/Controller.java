@@ -15,16 +15,21 @@ import java.awt.event.ActionListener;
 public class Controller implements ActionListener {
     public View view;
     public Model model;
-    
+    Sound sound;
     
     public Controller(View view, Model model) {
         this.view = view;
         this.model = model;
+        this.sound = new Sound();
         this.view.addActionListener(this);
     }
     
     public void addItemsToListener() {
         this.view.addItemsToListener(this);
+    }
+    
+    public void addShopItemsToListener() {
+        this.view.addShopItemsToListener(this);
     }
     
     @Override
@@ -35,18 +40,36 @@ public class Controller implements ActionListener {
             case "Continue Game":
                 model.getUserData(view.uInput.getText());
                 addItemsToListener();
+                addShopItemsToListener();
                 break;
             case "New Game":
                 model.newUser(view.uInput.getText());
                 addItemsToListener();
+                addShopItemsToListener();
                 break;
             case "Shop":
                 model.changeGameState(GameState.SHOP);
+                addItemsToListener();
                 break;
             case "Go Back":
                 model.changeGameState(GameState.MAIN_MENU);
+                addItemsToListener();
+                break;
+            case "Go Adventure!":
+                model.changeGameState(GameState.ADVENTURE);
+                break;
             default:
-                model.useItem(command.split(" ")[0]);
+                String cmd = command.split(" ")[0];
+                if(cmd.equals("Buy")) {
+                    model.buyItem(command.split(" ")[1]);
+                    sound.setFile(4);
+                    sound.play();
+                } else {
+                    model.useItem(command.split(" ")[0]);
+                    sound.setFile(3);
+                    sound.play();
+                }
+                
                 addItemsToListener();
                 break;
         }
