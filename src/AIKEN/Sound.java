@@ -19,12 +19,14 @@ public class Sound {
     File[] files;
     
     public Sound() {
-        files = new File[5];
+        files = new File[7];
         files[0] = new File("./sounds/collect_coin.wav");
         files[1] = new File("./sounds/hurt.wav");
         files[2] = new File("./sounds/shoot.wav");
         files[3] = new File("./sounds/use_item.wav");
         files[4] = new File("./sounds/purchase.wav");
+        files[5] = new File("./sounds/health_up.wav");
+        files[6] = new File("./sounds/health_down.wav");
     }
     
     public void setFile(int i) {

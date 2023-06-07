@@ -3,24 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/Entity.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Data.java</file>
             <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/View.java</file>
             <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/tile/TileManager.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/AdventurePanel.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/Obstacle.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Database.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Background.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/Slime.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Pet.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/ObstacleManager.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/User.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/Bullet.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/InventoryList.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Shop.java</file>
             <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/AIKENMain.java</file>
             <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Model.java</file>
-            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/KeyHandler.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Database.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Pet.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Sound.java</file>
             <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/Controller.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/entity/ObstacleManager.java</file>
+            <file>file:/C:/Users/hunub/OneDrive/Documents/NetBeansProjects/AIKENv2/src/AIKEN/User.java</file>
         </group>
     </open-files>
 </project-private>

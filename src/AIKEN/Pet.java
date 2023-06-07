@@ -19,15 +19,11 @@ public class Pet extends Thread {
     public GameState state;
     private String name;
     Model model;
+    Sound sound;
 
     // Default parameter used when starting a new game
     public Pet(String name) {
-        hunger = 50;
-        happiness = 50;
-        health = 50;
-        isAlive = true;
-        this.state = GameState.MAIN_MENU;
-        this.name = name;
+        this(name, 50, 50, 50);
     }
 
     // Second parameter used when loading a saved game.
@@ -38,6 +34,7 @@ public class Pet extends Thread {
         this.happiness = happiness;
         this.health = health;
         isAlive = true;
+        this.sound = new Sound();
     }
 
     public void setState(GameState state) {
@@ -62,11 +59,7 @@ public class Pet extends Thread {
                 if (health <= 0)
                     isAlive = false;
                 
-                if (state == GameState.QUIT) {
-                    break;
-                }
-
-                if (state != GameState.MAIN_MENU) {
+                if (state != GameState.MAIN_MENU || state == GameState.QUIT) {
                     synchronized (this) {
                         try {
                             wait();
@@ -80,16 +73,22 @@ public class Pet extends Thread {
 
                 if (health < 30) {
                     happiness -= 6;
-                } else if (health < 6) {
+                } else if (health < 60) {
                     happiness -= 3;
                 }
 
                 if (hunger < 30 || happiness < 30) {
                     health -= 6;
+                    sound.setFile(6);
+                    sound.play();
                 } else if (hunger < 60 || happiness < 60) {
                     health -= 3;
+                    sound.setFile(6);
+                    sound.play();
                 } else if (health < 100) {
                     health += 10;
+                    sound.setFile(5);
+                    sound.play();
                     if(health > 100) 
                         health = 100;
                 }

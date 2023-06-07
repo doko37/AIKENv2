@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -58,6 +59,23 @@ public class Database {
         }
     }
     
+    public ArrayList<String> getExistingUsers() {
+        ArrayList list = new ArrayList<>();
+        
+        try {
+            Statement stmt = conn.createStatement();
+            
+            ResultSet rs = stmt.executeQuery("SELECT PET_NAME FROM UserInfo");
+            while(rs.next()) {
+                list.add(rs.getString("PET_NAME"));
+            }
+        } catch(SQLException e) {
+            
+        }
+        
+        return list;
+    }
+    
     public User getUserData(String petName) {
         User user = null;
         Pet pet = null;
@@ -65,7 +83,7 @@ public class Database {
         
         try {
             Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT UserInfo.PET_NAME, UserInfo.MONEY, Pet.HUNGER, Pet.HAPPINESS, Pet.HEALTH FROM UserInfo, Pet WHERE UserInfo.PET_NAME = Pet.NAME AND UserInfo.PET_NAME = " + petName);
+            ResultSet rs = stmt.executeQuery("SELECT UserInfo.PET_NAME, UserInfo.MONEY, Pet.HUNGER, Pet.HAPPINESS, Pet.HEALTH FROM UserInfo, Pet WHERE UserInfo.PET_NAME = Pet.NAME AND UserInfo.PET_NAME = '" + petName + "'");
             if(rs.next()) {
                 pet = new Pet(petName, rs.getInt("HUNGER"), rs.getInt("HAPPINESS"), rs.getInt("HEALTH"));
                 money = rs.getInt("MONEY");
@@ -73,7 +91,7 @@ public class Database {
                 return null;
             }
             
-            rs = stmt.executeQuery("SELECT ITEM_NAME, AMOUNT FROM Inventory WHERE PET_NAME = " + petName);
+            rs = stmt.executeQuery("SELECT ITEM_NAME, AMOUNT FROM Inventory WHERE PET_NAME = '" + petName + "'");
             
             HashMap<String, Integer> inventory = new HashMap<>();
             while(rs.next()) {
@@ -86,6 +104,34 @@ public class Database {
         }
         
         return user;
+    }
+    
+    public void createNewUser(Data data) {
+        User user = data.user;
+        Pet pet = user.getPet();
+        
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.addBatch("INSERT INTO UserInfo VALUES ('" + pet.getPetName() + "', " + user.getMoney() + ")");
+            stmt.addBatch("INSERT INTO Pet VALUES ('" + pet.getPetName() + "', " + pet.getHunger() + ", " + pet.getHappiness() + ", " + pet.getHealth() + ")");
+            stmt.executeBatch();
+        } catch(SQLException e) {
+            
+        }
+    }
+    
+    public void deleteUser(Data data) {
+        User user = data.user;
+        Pet pet = user.getPet();
+        
+        try {
+            Statement stmt = conn.createStatement();
+            stmt.execute("DELETE FROM Pet WHERE NAME = '" + pet.getPetName() + "'");
+            stmt.execute("DELETE FROM Inventory WHERE PET_NAME = '" + pet.getPetName() + "'");
+            stmt.execute("DELETE FROM UserInfo WHERE PET_NAME = '" + pet.getPetName() +"'");
+        } catch(SQLException e) {
+            
+        }
     }
     
     public HashMap<String, Item> getShopItems() {
@@ -113,13 +159,24 @@ public class Database {
         return shopItems;
     }
     
-    public void quitGame(User user, Pet pet) {
+    public void quitGame(Data data) {
+        User user = data.user;
+        Pet pet = user.getPet();
+        
         try {
             Statement statement = conn.createStatement();
-            statement.addBatch("UPDATE UserInfo SET MONEY = " + user.getMoney() + " WHERE PET_NAME = " + pet.getPetName());
-            statement.addBatch("UPDATE Pet SET HUNGER = " + pet.getHunger() + ", HAPPINESS = " + pet.getHappiness() + ", HEALTH = " + pet.getHealth() + " WHERE NAME = " + pet.getPetName());
+            if(data.newGame) {
+                createNewUser(data);
+            } else {
+                statement.addBatch("UPDATE UserInfo SET MONEY = " + user.getMoney() + " WHERE PET_NAME = '" + pet.getPetName() + "'");
+                statement.addBatch("UPDATE Pet SET HUNGER = " + pet.getHunger() + ", HAPPINESS = " + pet.getHappiness() + ", HEALTH = " + pet.getHealth() + " WHERE NAME = '" + pet.getPetName() + "'");
+            }
+            
+            statement.addBatch("DELETE FROM Inventory WHERE PET_NAME = '" + pet.getPetName() + "'");
+            
             for(Map.Entry<String, Integer> entry : user.getInventory().entrySet()) {
-                statement.addBatch("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES (" + pet.getPetName() + ", " + entry.getKey() + ", " + entry.getValue() + ")");
+                System.out.println("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES ('" + pet.getPetName() + "', '" + entry.getKey() + "', " + entry.getValue() + ")");
+                statement.addBatch("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES ('" + pet.getPetName() + "', '" + entry.getKey() + "', " + entry.getValue() + ")");
             }
             
             statement.executeBatch();
@@ -131,8 +188,8 @@ public class Database {
     private void stockShop() {
         try {
             Statement stmt = conn.createStatement();
-            stmt.execute("INSERT INTO Shop VALUES ('Burger', 20, 14, null, 'food'), ('Pizza', 16, 10, null, 'food'), ('Sushi', 9, 6, null, 'food'), " +
-                    "('Cube', 14, 7, 1, 'toy'), ('Joyboy', 50, 30, 3, 'toy'), ('Ball', 9, 5, 2, 'toy')");
+            stmt.execute("INSERT INTO Shop VALUES ('burger', 20, 14, null, 'food'), ('pizza', 16, 10, null, 'food'), ('sushi', 9, 6, null, 'food'), " +
+                    "('cube', 14, 7, 1, 'toy'), ('joyboy', 50, 30, 3, 'toy'), ('ball', 9, 5, 2, 'toy')");
         } catch(SQLException e) {
             
         }

@@ -52,7 +52,8 @@ public class ObstacleManager {
         }
         
         for(Obstacle curr : spawnList) {
-            if(curr.y + ap.tileSize >= ap.screenHeight - ap.tileSize) {
+            if(curr.alive) {
+                if(curr.y + ap.tileSize >= ap.screenHeight - ap.tileSize && curr.y <= ap.screenHeight) {
                     if(slime.x >= curr.x && slime.x < (curr.x + (curr.large ? ap.tileSize*2 : ap.tileSize))) {
                         if(curr.coin) {
                             ap.addCoin();
@@ -68,23 +69,22 @@ public class ObstacleManager {
                     }
                 }
             
-            if(bullet.alive && bullet.x >= curr.x && bullet.x <= (curr.x + (curr.large ? ap.tileSize*2 : ap.tileSize))) {
-                if(bullet.y <= curr.y + (curr.large ? ap.tileSize*2 : ap.tileSize)) {
-                    if(!curr.bulletProof) {
-                        if(curr.coin) {
-                            ap.addCoin();
-                            ap.playSound(0);
+                if(bullet.alive && bullet.x >= curr.x && bullet.x <= (curr.x + (curr.large ? ap.tileSize*2 : ap.tileSize))) {
+                    if(bullet.y <= curr.y + (curr.large ? ap.tileSize*2 : ap.tileSize)) {
+                        if(!curr.bulletProof) {
+                            if(curr.coin) {
+                                ap.addCoin();
+                                ap.playSound(0);
+                            }
+                            curr.alive = false;
+                            curr.x = -64;
+                            curr.y = -64;
+                            numAlive--;
                         }
-                        curr.alive = false;
-                        curr.x = -64;
-                        curr.y = -64;
-                        numAlive--;
+                        ap.killBullet();
                     }
-                    ap.killBullet();
                 }
-            }
-
-            if(curr.alive) {
+                
                 curr.y += 6;
                 if(curr.y >= ap.screenHeight) {
                     curr.alive = false;

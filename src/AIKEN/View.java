@@ -16,6 +16,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -44,12 +46,19 @@ public class View extends JFrame implements Observer {
     JButton adventureButton = new JButton("Go Adventure!");
     JButton quit = new JButton("Quit");
     JButton back = new JButton("Go Back");
+    JButton saveGame = new JButton("Save Game");
+    JButton notSave = new JButton("No Thanks");
+    JButton notDelete = new JButton("Quit without deleting");
+    JButton delete = new JButton("Delete and quit");
     JTextField uInput = new JTextField(10);
+    JComboBox existingUsers = new JComboBox();
     JLabel uName = new JLabel("Pet Name");
     JLabel title = new JLabel("Welcome to AIKEN!");
     JLabel message = new JLabel("");
     JButton continueGame = new JButton("Continue Game");
     JButton newGame = new JButton("New Game");
+    JButton cancel = new JButton("Cancel");
+    JDialog quitPrompter = new JDialog();
     JProgressBar hungerBar = new JProgressBar(0, 100);
     JProgressBar happinessBar = new JProgressBar(0, 100);
     JProgressBar healthBar = new JProgressBar(0, 100);
@@ -64,25 +73,25 @@ public class View extends JFrame implements Observer {
     AdventurePanel adventure;
     ArrayList<JButton> items;
     HashMap<String, JButton> shopItems;
-    Model model;
-    GameState gameState;
 
     
-    public View(Model model) {
+    public View(AdventurePanel ap, ArrayList<String> userList) {
         super("AIKEN");
+        this.setIconImage(new ImageIcon("./slimes/blue_neutral.png").getImage());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(1000, 650);
-        title.setFont(new Font("System", Font.BOLD, 24));
-        startingScreen.add(title);
-        startingScreen.add(message);
-        startingScreen.add(uName);
-        startingScreen.add(uInput);
-        startingScreen.add(continueGame);
-        startingScreen.add(newGame);
-        this.model = model;
-        this.adventure = new AdventurePanel(model, GameState.STARTING_SCREEN);
-        items = new ArrayList<>();
-        shopItems = new HashMap<>();
+        this.title.setFont(new Font("System", Font.BOLD, 24));
+        this.startingScreen.add(title);
+        this.existingUsers = new JComboBox(userList.toArray());
+        this.startingScreen.add(existingUsers);
+        this.startingScreen.add(continueGame);
+        this.startingScreen.add(uName);
+        this.startingScreen.add(uInput);
+        this.startingScreen.add(newGame);
+        this.startingScreen.add(message);
+        this.adventure = ap;
+        this.items = new ArrayList<>();
+        this.shopItems = new HashMap<>();
         this.setResizable(false);
         this.add(startingScreen, BorderLayout.CENTER);
         this.setVisible(true);
@@ -128,11 +137,12 @@ public class View extends JFrame implements Observer {
         this.statusPanel.add(moneyIcon);
         this.statusPanel.add(money);
         
-        itemLabel.setBorder(new EmptyBorder(0, 0, 0, 500));
+        //itemLabel.setBorder(new EmptyBorder(0, 0, 0, 500));
         inventoryPanel.setLayout(new BoxLayout(inventoryPanel, BoxLayout.X_AXIS));
+        inventoryPanel.setMinimumSize(new Dimension(this.getWidth(), 60));
         
         inventoryPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        inventoryPanel.setBorder(new EmptyBorder(0, 0, 0, 400));
+        //inventoryPanel.setBorder(new EmptyBorder(0, 0, 0, 400));
         itemLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
@@ -140,6 +150,9 @@ public class View extends JFrame implements Observer {
         southPanel.add(itemLabel);
         southPanel.add(inventoryPanel);
         southPanel.add(userPanel);
+        
+        userPanel.setBackground(Color.LIGHT_GRAY);
+        inventoryPanel.setBorder(new EmptyBorder(0, 0, 10, 0));
         
         this.getContentPane().removeAll();
         this.userPanel.setVisible(true);
@@ -162,7 +175,9 @@ public class View extends JFrame implements Observer {
         this.getContentPane().remove(mainScreen);
         mainScreen.setBackground(Color.white);
         mainScreen.setAlignmentX(Component.CENTER_ALIGNMENT);
-        southPanel.add(back);
+        userPanel.removeAll();
+        userPanel.add(back);
+        southPanel.add(userPanel);
         mainScreen = new Background(new ImageIcon("./items/shop_background2.jpg").getImage());
         mainScreen.setLayout(new BoxLayout(mainScreen, BoxLayout.Y_AXIS));
         for(Map.Entry<String, JButton> entry : shopItems.entrySet()) {
@@ -217,10 +232,6 @@ public class View extends JFrame implements Observer {
         this.add(southPanel, BorderLayout.SOUTH);
     }
     
-    public void endGame(GameState gameState, boolean save) {
-        
-    }
-    
     public void addActionListener(ActionListener listener) {
         this.back.addActionListener(listener);
         this.newGame.addActionListener(listener);
@@ -228,6 +239,11 @@ public class View extends JFrame implements Observer {
         this.shop.addActionListener(listener);
         this.adventureButton.addActionListener(listener);
         this.quit.addActionListener(listener);
+        this.saveGame.addActionListener(listener);
+        this.notSave.addActionListener(listener);
+        this.cancel.addActionListener(listener);
+        this.notDelete.addActionListener(listener);
+        this.delete.addActionListener(listener);
     }
     
     public void addShopItemsToListener(ActionListener listener) {
@@ -248,8 +264,10 @@ public class View extends JFrame implements Observer {
         this.getContentPane().removeAll();
         this.adventure.gameState = GameState.ADVENTURE;
         this.add(adventure, BorderLayout.CENTER);
+        userPanel.removeAll();
+        userPanel.add(back);
         southPanel.removeAll();
-        southPanel.add(back);
+        southPanel.add(userPanel);
         this.add(statusPanel, BorderLayout.NORTH);
         this.add(southPanel, BorderLayout.SOUTH);
         this.adventure.requestFocusInWindow();
@@ -261,11 +279,67 @@ public class View extends JFrame implements Observer {
         this.repaint();
     }
     
+    public void quitPrompt(Data data) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        String prompt;
+        
+        boolean petDied = !data.user.getPet().isAlive;
+        
+        if(!petDied) {
+            prompt = "Would you like you save your game?";
+        } else {
+            if(data.newGame) {
+                prompt = data.user.getPet().getPetName() + " has died! Since you do not have a previous saved nothing will be saved.";
+            } else {
+                prompt = data.user.getPet().getPetName() + " has died! Would you like to delete your save?";
+            }
+        }
+        
+        panel.add(new JLabel(prompt));
+        if(!petDied)
+            panel.add(new JLabel("(Your game will be saved under the name \"" + data.user.getPet().getPetName() + "\")"));
+        
+        JPanel options = new JPanel();
+        
+        if(petDied) {
+            if(data.newGame) {
+                JButton quit2 = new JButton("Quit");
+                quit2.addActionListener((ActionEvent e) -> {
+                    System.exit(0); 
+                });
+                        
+                options.add(quit2);
+            } else {
+                options.add(notDelete);
+                options.add(delete);
+            }
+        } else {
+            options.add(saveGame);
+            options.add(notSave);
+            options.add(cancel);
+        }
+        
+        panel.add(options);
+        
+        quitPrompter.setLocationRelativeTo(this);
+        Point location = this.getLocationOnScreen();
+        quitPrompter.setLocation(location.x + (this.getWidth() / 4), location.y + (this.getHeight() / 2));
+        quitPrompter.setAlwaysOnTop(true);
+        quitPrompter.setContentPane(panel);
+        quitPrompter.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        quitPrompter.pack();
+        
+        quitPrompter.setModal(true);
+        quitPrompter.setVisible(true);
+    }
+    
     @Override
     public void update(Observable o, Object arg) {
         Data data = (Data) arg;
-        if(data.gameState == GameState.STARTING_SCREEN) {
-            if(!data.newGame) {
+        switch(data.gameState) {
+            case STARTING_SCREEN:
+                if(!data.newGame) {
                 if(data.user == null) {
                     this.message.setText("Pet name does not exist, please try again.");
                 } else {
@@ -277,98 +351,114 @@ public class View extends JFrame implements Observer {
                         shopItems.put(entry.getKey(), button);
                     }
                 }
-            } else {
-                if(data.user == null) {
-                    this.message.setText("Please enter the name of your pet.");
                 } else {
-                    this.message.setText("");
-                    this.petName.setText(data.user.getPet().getPetName());
-                    this.pet.setText(data.user.getPet().toString());
-                    for(Map.Entry<String, Item> entry : data.shop.getItems().entrySet()) {
-                        JButton button = new JButton();
-                        shopItems.put(entry.getKey(), button);
+                    if (this.uInput.getText().equals("")) {
+                        this.message.setText("Please enter the name of your pet.");
+                    }
+                    else if(data.user == null) {
+                        this.message.setText("Username already exists, please choose a different name.");
+                    } else {
+                        this.message.setText("");
+                        this.petName.setText(data.user.getPet().getPetName());
+                        this.pet.setText(data.user.getPet().toString());
+                        for(Map.Entry<String, Item> entry : data.shop.getItems().entrySet()) {
+                            JButton button = new JButton();
+                            shopItems.put(entry.getKey(), button);
+                        }
                     }
                 }
-            }
-        } else if(data.gameState == GameState.MAIN_MENU) {
-            adventure.gameState = GameState.MAIN_MENU;
-            int petHealth = data.user.getPet().getHealth();
-            if(petHealth < 40) {
-                slimeIcon = new ImageIcon("./slimes/blue_unhappy.png");
-            } else if(petHealth < 70){
-                slimeIcon = new ImageIcon("./slimes/blue_neutral.png");
-            } else {
-                slimeIcon = new ImageIcon("./slimes/blue_happy.png");
-            }
-            startGame();
-            System.out.println(data.autoRefresh);
-            if(!data.autoRefresh) {
-                int count = 0;
-                this.items.clear();
-                this.inventoryPanel.removeAll();
-                for(Map.Entry<String, Integer> entry : data.user.getInventory().entrySet()) {
-                    Item item = data.shop.get(entry.getKey());
-                    JButton label = new JButton(entry.getKey() + " x" + entry.getValue());
-                    label.setIcon(new ImageIcon("./items/" + entry.getKey().toLowerCase() + ".png"));
-                    label.setHorizontalTextPosition(JLabel.CENTER);
-                    label.setVerticalTextPosition(JLabel.BOTTOM);
-                    label.setSize(32, 32);
-                    label.addMouseListener(new java.awt.event.MouseAdapter() {
-                        @Override
-                        public void mouseEntered(java.awt.event.MouseEvent evt) {
-                            String str = "    Item name: " + entry.getKey();
-                            str += (item instanceof Food) ? "    |    Hunger restoration: " + ((Food) item).getRestoreLevel() : "    |    Happiness restoration: " + ((Toy) item).getFunLevel();
-                            if(item instanceof Toy) str += "    |    Hunger loss: " + ((Toy) item).getTiringLevel();
-                            itemLabel.setText("Inventory: " + str);
-                            pack();
-                        }
+                break;
+            
+            case MAIN_MENU:
+                if(quitPrompter.isVisible()) quitPrompter.dispose();
+                adventure.gameState = GameState.MAIN_MENU;
+                int petHealth = data.user.getPet().getHealth();
+                if(petHealth < 20) {
+                    slimeIcon = new ImageIcon("./slimes/blue_sick.png");
+                } else if(petHealth < 40) {
+                    slimeIcon = new ImageIcon("./slimes/blue_unhappy.png");
+                } else if(petHealth < 70){
+                    slimeIcon = new ImageIcon("./slimes/blue_neutral.png");
+                } else {
+                    slimeIcon = new ImageIcon("./slimes/blue_happy.png");
+                }
+                startGame();
+                if(!data.autoRefresh) {
+                    int count = 0;
+                    this.items.clear();
+                    this.inventoryPanel.removeAll();
+                    for(Map.Entry<String, Integer> entry : data.user.getInventory().entrySet()) {
+                        Item item = data.shop.get(entry.getKey());
+                        JButton label = new JButton(entry.getKey() + " x" + entry.getValue());
+                        label.setIcon(new ImageIcon("./items/" + entry.getKey().toLowerCase() + ".png"));
+                        label.setHorizontalTextPosition(JLabel.CENTER);
+                        label.setVerticalTextPosition(JLabel.BOTTOM);
+                        label.setSize(32, 32);
+                        label.addMouseListener(new java.awt.event.MouseAdapter() {
+                            @Override
+                            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                                String str = "    Item name: " + entry.getKey();
+                                str += (item instanceof Food) ? "    |    Hunger restoration: " + ((Food) item).getRestoreLevel() : "    |    Happiness restoration: " + ((Toy) item).getFunLevel();
+                                if(item instanceof Toy) str += "    |    Hunger loss: " + ((Toy) item).getTiringLevel();
+                                itemLabel.setText("Inventory: " + str);
+                                pack();
+                            }
 
-                        @Override
-                        public void mouseExited(java.awt.event.MouseEvent evt) {
-                            itemLabel.setText("Inventory: ");
-                            pack();
-                        }
-                    });
-                    this.items.add(label);
-                    this.inventoryPanel.add(label);
-                    
-                    count++;
+                            @Override
+                            public void mouseExited(java.awt.event.MouseEvent evt) {
+                                itemLabel.setText("Inventory: ");
+                                pack();
+                            }
+                        });
+                        this.items.add(label);
+                        this.inventoryPanel.add(label);
+
+                        count++;
+                    }
+
+                    if(count < 1) {
+                        itemLabel.setText("Inventory: ");
+                        inventoryPanel.add(new JLabel("Your inventory is empty! Go to the shop to buy more items."));
+                    }
                 }
-                
-                if(count < 1) {
-                    itemLabel.setText("Inventory: ");
-                    inventoryPanel.add(new JLabel("Your inventory is empty! Go to the shop to buy more items."));
+
+                this.money.setText(Integer.toString(data.user.getMoney()));
+                this.hungerBar.setValue(data.user.getPet().getHunger());
+                this.happinessBar.setValue(data.user.getPet().getHappiness());
+                this.healthBar.setValue(data.user.getPet().getHealth());
+                this.revalidate();
+                this.repaint();
+                this.pack();
+                break;
+            case SHOP:
+                openShop(data);
+                this.revalidate();
+                this.repaint();
+                this.pack();
+                break;
+            case ADVENTURE:
+                if(adventure.gameState != GameState.ADVENTURE) {
+                    startAdventure();
                 }
-            }
-            
-            this.money.setText(Integer.toString(data.user.getMoney()));
-            this.hungerBar.setValue(data.user.getPet().getHunger());
-            this.happinessBar.setValue(data.user.getPet().getHappiness());
-            this.healthBar.setValue(data.user.getPet().getHealth());
-            this.revalidate();
-            this.repaint();
-            this.pack();
-        } else if(data.gameState == GameState.SHOP) {
-            openShop(data);
-            this.revalidate();
-            this.repaint();
-            this.pack();
-            // if broke, pop up message to user.
-        } else if(data.gameState == GameState.ADVENTURE) {
-            if(adventure.gameState != GameState.ADVENTURE) {
-                startAdventure();
-            }
-            
-            this.money.setText(Integer.toString(data.user.getMoney()));
-            this.hungerBar.setValue(data.user.getPet().getHunger());
-            this.happinessBar.setValue(data.user.getPet().getHappiness());
-            this.healthBar.setValue(data.user.getPet().getHealth());
-            
-            this.revalidate();
-            this.repaint();
-            this.pack();
-        } else if(data.gameState == GameState.QUIT || data.gameState == GameState.PET_DIED) {
-            endGame(data.gameState, data.save);
+
+                this.money.setText(Integer.toString(data.user.getMoney()));
+                this.hungerBar.setValue(data.user.getPet().getHunger());
+                this.happinessBar.setValue(data.user.getPet().getHappiness());
+                this.healthBar.setValue(data.user.getPet().getHealth());
+
+                this.revalidate();
+                this.repaint();
+                this.pack();
+                break;
+            case QUIT:
+            case PET_DIED:
+                if(!quitPrompter.isVisible()) {
+                    quitPrompt(data);
+                }
+                break;
+            case EXIT:
+                System.exit(0);
+                break;
         }
     }
 }

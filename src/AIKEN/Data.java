@@ -16,13 +16,13 @@ public class Data {
         SHOP,
         ADVENTURE,
         QUIT,
-        PET_DIED
+        PET_DIED,
+        EXIT
     }
     
     GameState gameState;
     User user;
     boolean newGame;
-    boolean save;
     boolean autoRefresh;
     boolean broke;
     Shop shop;

@@ -76,9 +76,6 @@ public class Slime extends Entity {
     }
     
     public void draw(Graphics2D g2) {
-//        g2.setColor(Color.white);
-//        g2.fillRect(x, y, ap.tileSize, ap.tileSize);
-
         Image image = sprite;
         
         if(bullet.alive) {

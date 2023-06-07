@@ -26,7 +26,7 @@ public class TileManager {
     
     public void getTileImage() {
         tile[0] = new Tile();
-        tile[0].image = new ImageIcon("./tiles/layered_grass_tile.png").getImage();
+        tile[0].image = new ImageIcon("./tiles/grass_tile.png").getImage();
         tile[1] = new Tile();
         tile[1].image = new ImageIcon("./tiles/tree_tile.png").getImage();
         tile[2] = new Tile();

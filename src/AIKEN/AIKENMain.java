@@ -4,6 +4,8 @@
  */
 package AIKEN;
 
+import AIKEN.Data.GameState;
+
 /**
  *
  * @author hunub
@@ -11,7 +13,8 @@ package AIKEN;
 public class AIKENMain {
     public static void main(String args[]) {
         Model model = new Model();
-        View view = new View(model);
+        AdventurePanel ap = new AdventurePanel(model, GameState.STARTING_SCREEN);
+        View view = new View(ap, model.getExistingUsers());
         Controller controller = new Controller(view, model);
         model.addObserver(view);
     }

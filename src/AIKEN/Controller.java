@@ -7,6 +7,7 @@ package AIKEN;
 import AIKEN.Data.GameState;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JComboBox;
 
 /**
  *
@@ -38,7 +39,7 @@ public class Controller implements ActionListener {
         
         switch(command) {
             case "Continue Game":
-                model.getUserData(view.uInput.getText());
+                model.getUserData((String) view.existingUsers.getSelectedItem());
                 addItemsToListener();
                 addShopItemsToListener();
                 break;
@@ -57,6 +58,25 @@ public class Controller implements ActionListener {
                 break;
             case "Go Adventure!":
                 model.changeGameState(GameState.ADVENTURE);
+                break;
+            case "Quit":
+                model.quitPrompt();
+                break;
+            case "Quit without deleting":
+                model.quit();
+                break;
+            case "Delete and quit":
+                model.deleteUser();
+                break;
+            case "Save Game":
+                model.saveAndQuit();
+                break;
+            case "No Thanks":
+                model.quit();
+                break;
+            case "Cancel":
+                model.changeGameState(GameState.MAIN_MENU);
+                addItemsToListener();
                 break;
             default:
                 String cmd = command.split(" ")[0];

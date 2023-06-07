@@ -5,6 +5,7 @@
 package AIKEN;
 
 import AIKEN.Data.GameState;
+import java.util.ArrayList;
 import java.util.Observable;
 
 /**
@@ -43,9 +44,13 @@ public class Model extends Observable {
         }
     }
     
+    public ArrayList<String> getExistingUsers() {
+        return db.getExistingUsers();
+    }
+    
     public void newUser(String petName) {
         this.data.newGame = true;
-        if(petName.equals("")) {
+        if(petName.equals("") || db.getUserData(petName) != null) {
             setChanged();
             this.notifyObservers(data);
             return;
@@ -115,6 +120,37 @@ public class Model extends Observable {
     
     public void takeDamage() {
         data.user.getPet().takeDamage(5);
+        if(data.user.getPet().getHealth() < 1) {
+            data.user.getPet().isAlive = false;
+            data.gameState = GameState.PET_DIED;
+        }
+        setChanged();
+        notifyObservers(data);
+    }
+    
+    public void quitPrompt() {
+        if(data.gameState != GameState.QUIT) {
+            this.data.user.getPet().setState(GameState.QUIT);
+            data.gameState = GameState.QUIT;
+            setChanged();
+            notifyObservers(data);
+        }
+    }
+    
+    public void deleteUser() {
+        db.deleteUser(data);
+        data.gameState = GameState.EXIT;
+        setChanged();
+        notifyObservers(data);
+    }
+    
+    public void saveAndQuit() {
+       db.quitGame(data);
+       quit();
+    }
+    
+    public void quit() {
+        data.gameState = GameState.EXIT;
         setChanged();
         notifyObservers(data);
     }
