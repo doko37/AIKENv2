@@ -1,7 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package AIKEN;
 
 import java.sql.Connection;
@@ -17,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * This class manages the connection with the database.
  * @author hunub
  */
 public class Database {
@@ -26,6 +28,25 @@ public class Database {
     String password = "pdc";
     String url = "jdbc:derby:AIKENDB; create=true";
     
+    /**
+     * Database set up.
+     * 
+     * Create 4 tables:
+     * - UserInfo
+     * - Pet
+     * - Shop
+     * - Inventory
+     * 
+     * UserInfo contains the name of the pet (which also functions as the username) and the amount of money.
+     * 
+     * Pet contains the name of the pet and the values of hunger, happiness, and health (all integer values).
+     * 
+     * The shop contains all the items that will be in the shop
+     * Each item has an item name, price, restoration, a hunger loss value (if the item is a toy), and a type.
+     * 
+     * The inventory table contains all the items owned by users.
+     * Each item is identified by the name of the user who owns it, and the name of item and the amount of that item the user owns.
+     */
     public void dbSetup() {
         try {
             this.conn = DriverManager.getConnection(url, username, password);
@@ -59,6 +80,10 @@ public class Database {
         }
     }
     
+    /**
+     * Returns a list of usernames.
+     * @return 
+     */
     public ArrayList<String> getExistingUsers() {
         ArrayList list = new ArrayList<>();
         
@@ -76,6 +101,17 @@ public class Database {
         return list;
     }
     
+    /**
+     * Retrieves user info based on the pet name.
+     * 
+     * Queries for userInfo and Pet where the name is equal to the input.
+     * If no results are found, return null.
+     * 
+     * Otherwise get all the items owned by that user and save it into a HashMap.
+     * Create a new user with the data retrieved and return it.
+     * @param petName
+     * @return 
+     */
     public User getUserData(String petName) {
         User user = null;
         Pet pet = null;
@@ -106,6 +142,11 @@ public class Database {
         return user;
     }
     
+    
+    /**
+     * Inserts a new row inside the UserInfo and Pet tables.
+     * @param data 
+     */
     public void createNewUser(Data data) {
         User user = data.user;
         Pet pet = user.getPet();
@@ -120,6 +161,10 @@ public class Database {
         }
     }
     
+    /**
+     * Deletes all rows from the Pet, Inventory, and UserInfo table where the name of the pet is equal to the input.
+     * @param data 
+     */
     public void deleteUser(Data data) {
         User user = data.user;
         Pet pet = user.getPet();
@@ -134,6 +179,10 @@ public class Database {
         }
     }
     
+    /**
+     * Returns a HashMap containing all the items in the Shop table, where the name of the item is the key, and the item itself is the value.
+     * @return 
+     */
     public HashMap<String, Item> getShopItems() {
         HashMap<String, Item> shopItems = new HashMap<>();
         try {
@@ -159,7 +208,11 @@ public class Database {
         return shopItems;
     }
     
-    public void quitGame(Data data) {
+    /**
+     * Updates the UserInfo, Pet and Inventory tables with new data.
+     * @param data 
+     */
+    public void saveGame(Data data) {
         User user = data.user;
         Pet pet = user.getPet();
         
@@ -172,10 +225,12 @@ public class Database {
                 statement.addBatch("UPDATE Pet SET HUNGER = " + pet.getHunger() + ", HAPPINESS = " + pet.getHappiness() + ", HEALTH = " + pet.getHealth() + " WHERE NAME = '" + pet.getPetName() + "'");
             }
             
+            // Delete all rows with items the user used to own.
             statement.addBatch("DELETE FROM Inventory WHERE PET_NAME = '" + pet.getPetName() + "'");
             
+            // Re the current items the user owns.
             for(Map.Entry<String, Integer> entry : user.getInventory().entrySet()) {
-                System.out.println("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES ('" + pet.getPetName() + "', '" + entry.getKey() + "', " + entry.getValue() + ")");
+                
                 statement.addBatch("INSERT INTO Inventory (PET_NAME, ITEM_NAME, AMOUNT) VALUES ('" + pet.getPetName() + "', '" + entry.getKey() + "', " + entry.getValue() + ")");
             }
             
@@ -185,6 +240,9 @@ public class Database {
         }
     }
     
+    /**
+     * Used to populate the Shop table with items if a new one was created.
+     */
     private void stockShop() {
         try {
             Statement stmt = conn.createStatement();
@@ -204,7 +262,6 @@ public class Database {
     private boolean tableExists(String newTableName) {
         boolean flag = false;
         try {
-            System.out.println("check existing tables.... ");
             String[] types = {"TABLE"};
             DatabaseMetaData dbmd = conn.getMetaData();
             ResultSet rsDBMeta = dbmd.getTables(null, null, null, null);//types);
@@ -212,7 +269,6 @@ public class Database {
             while (rsDBMeta.next()) {
                 String tableName = rsDBMeta.getString("TABLE_NAME");
                 if (tableName.compareToIgnoreCase(newTableName) == 0) {
-                    System.out.println(tableName + "  is there");
                     flag = true;
                 }
             }

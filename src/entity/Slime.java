@@ -1,21 +1,19 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package entity;
 
 import AIKEN.AdventurePanel;
 import AIKEN.KeyHandler;
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * This class represents the player in the adventure mini-game.
  * @author hunub
  */
 public class Slime extends Entity {
@@ -30,12 +28,30 @@ public class Slime extends Entity {
         getSprite();
     }
     
+    /**
+     * By default set the location of player in the center of the screen (horizontally),
+     * and at the bottom row of the screen.
+     */
     public void setDefaultValues() {
         x = ap.tileSize*6;
         y = ap.screenHeight - ap.tileSize;
         speed = ap.tileSize;
     }
     
+    /**
+     * Updates the character's position based on key inputs.
+     * 
+     * If a key is not being pressed:
+     * 
+     * if left is pressed move the character left by one tile,
+     * 
+     * if right is pressed move the character right by one tile,
+     * 
+     * if the space bar is pressed and the bullet is not alive, play a sound, move the bullet to the
+     * player's current position and make it alive.
+     * 
+     * If the bullet is alive, then move it up the screen by 20 pixels, if the bullet's y position is greater than 0, kill it.
+     */
     public void update() {
         if(!keyH.keyPressed) {
             if(keyH.left) {
@@ -75,6 +91,7 @@ public class Slime extends Entity {
         sprite = new ImageIcon("./slimes/blue_back_resized.png").getImage();
     }
     
+    // Draw the bullet and the character.
     public void draw(Graphics2D g2) {
         Image image = sprite;
         

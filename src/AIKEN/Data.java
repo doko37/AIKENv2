@@ -1,11 +1,15 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package AIKEN;
 
+import java.util.ArrayList;
+
 /**
- *
+ * This class contains all the data necessary for the AIKEN game.
  * @author hunub
  */
 public class Data {
@@ -25,5 +29,7 @@ public class Data {
     boolean newGame;
     boolean autoRefresh;
     boolean broke;
+    boolean refreshStartMenu;
     Shop shop;
+    ArrayList<String> userList;
 }

@@ -1,23 +1,27 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package AIKEN;
 
 import java.io.File;
-import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 /**
- *
+ * This sound manages all the sound files for the game.
  * @author hunub
  */
 public class Sound {
     Clip clip;
     File[] files;
     
+    /**
+     * At construction, store the files in an array.
+     */
     public Sound() {
         files = new File[7];
         files[0] = new File("./sounds/collect_coin.wav");
@@ -29,6 +33,10 @@ public class Sound {
         files[6] = new File("./sounds/health_down.wav");
     }
     
+    /**
+     * Load a sound file that corresponds to the index.
+     * @param i 
+     */
     public void setFile(int i) {
         try {
             AudioInputStream ai = AudioSystem.getAudioInputStream(files[i]);

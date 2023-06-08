@@ -6,6 +6,7 @@
 package AIKEN;
 
 import AIKEN.Data.GameState;
+import javax.swing.SwingUtilities;
 
 // This class represents the pet in the game.
 // A pet is a Thread that continously runs throughout the game and changes its attributes based on its current status.
@@ -46,12 +47,12 @@ public class Pet extends Thread {
     }
 
     // While the pet is alive, every 10 seconds:
-    // If health is below 3, reduce happiness by 2, and if health is below 6 reduce happiness by 1,
-    // If hunger or happiness is below 3, reduce health by 2, and if hunger or happiness is below 6, reduce happiness by 1,
-    // else increase health by 1 if it below 10,
-    // reduce hunger by 1,
-    // If health is 0 or below or game state is TERMINATED, set isAlive to false,
-    // If game state is not MAIN, then wait.
+    // If health is below 30, reduce happiness by 6, and if health is below 60 reduce happiness by 3,
+    // If hunger or happiness is below 30, reduce health by 6, and if hunger or happiness is below 60, reduce happiness by 3,
+    // else increase health by 5 if it below 100,
+    // reduce hunger by 5,
+    // If health is 0 or below set isAlive to false,
+    // If game state is not MAIN_MENU, then wait.
     @Override
     public void run() {
         try {
@@ -71,6 +72,10 @@ public class Pet extends Thread {
                 
                 Thread.sleep(10 * 1000);
 
+                if(state == GameState.STARTING_SCREEN) {
+                    break;
+                }
+                
                 if (health < 30) {
                     happiness -= 6;
                 } else if (health < 60) {
@@ -86,7 +91,7 @@ public class Pet extends Thread {
                     sound.setFile(6);
                     sound.play();
                 } else if (health < 100) {
-                    health += 10;
+                    health += 5;
                     sound.setFile(5);
                     sound.play();
                     if(health > 100) 
@@ -102,7 +107,10 @@ public class Pet extends Thread {
                     hunger = 0;
                 }
                 
-                model.updatePetStatus();
+                // Updates the observer asynchronously
+                SwingUtilities.invokeLater(() -> {
+                    model.updatePetStatus();
+                });
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

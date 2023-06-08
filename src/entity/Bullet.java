@@ -1,17 +1,16 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package entity;
 
 import AIKEN.AdventurePanel;
-import AIKEN.KeyHandler;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * This class represents the bullet the slime shoots in the adventure mini-game.
  * @author hunub
  */
 public class Bullet extends Entity {
@@ -24,6 +23,7 @@ public class Bullet extends Entity {
         getSprite();
     }
     
+    // Set the position to the player's position (centered x-axis).
     public void set(int playerX, int playerY) {
         x = playerX + (ap.tileSize / 4) ; 
         y = playerY;
@@ -31,15 +31,5 @@ public class Bullet extends Entity {
     
     public void getSprite() {
         sprite = new ImageIcon("./objects/bullet.png").getImage();
-    }
-    
-    public boolean touching(Obstacle obstacle) {
-        if(x >= obstacle.x && x <= (obstacle.x + (obstacle.large ? ap.tileSize*2 : ap.tileSize))) {
-            if(y <= obstacle.y + (obstacle.large ? ap.tileSize*2 : ap.tileSize)) {
-                return true;
-            }
-        }
-        
-        return false;
     }
 }

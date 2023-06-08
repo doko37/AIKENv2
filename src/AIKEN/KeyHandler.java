@@ -1,7 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package AIKEN;
 
 import entity.Slime;
@@ -9,7 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 /**
- *
+ * This class listens to key input from the user.
+ * Used for handling input in the adventure mini-game.
  * @author hunub
  */
 public class KeyHandler implements KeyListener {
@@ -23,6 +26,7 @@ public class KeyHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // The character should only move one per key press. Having this flag prevents the user from being able to hold the key to move the character.
         if (keyPressed) {
             return;
         }

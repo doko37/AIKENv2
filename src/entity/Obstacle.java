@@ -1,13 +1,20 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package entity;
 
 import java.awt.Image;
 
 /**
- *
+ * This class represents the obstacle in the adventure mini-game.
+ * 
+ * An obstacle is an Entity with the following properties:
+ * - large flag
+ * - bulletproof flag
+ * - coin flag
  * @author hunub
  */
 public class Obstacle extends Entity {

@@ -1,7 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package AIKEN;
 
 import AIKEN.Data.GameState;
@@ -9,6 +11,7 @@ import entity.Bullet;
 import entity.ObstacleManager;
 import entity.Slime;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,19 +19,24 @@ import javax.swing.JPanel;
 import tile.TileManager;
 
 /**
- *
+ * This is a JPanel which holds all the components for the adventure mini-game.
+ * It manages the updating and drawing of the character, tiles and obstacles in a 2d plain.
  * @author hunub
  */
 public class AdventurePanel extends JPanel implements Runnable {
+    // Size of a tile 32x32px
     final int actualTileSize = 32;
     final int scale = 2;
     
+    // Size of tile once scaled up.
     public final int tileSize = actualTileSize * scale;
+    
+    // The number of tiles on the screen: 8 columns and 13 rows.
     public final int maxScreenCol = 8;
     public final int maxScreenRow = 13;
     
-    public final int screenWidth = tileSize * maxScreenRow; // 768px
-    public final int screenHeight = tileSize * maxScreenCol; // 576px
+    public final int screenWidth = tileSize * maxScreenRow; // 813px
+    public final int screenHeight = tileSize * maxScreenCol; // 512px
     
     TileManager tileManager;
     ObstacleManager obManager;
@@ -43,7 +51,7 @@ public class AdventurePanel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setMinimumSize(new Dimension(screenWidth, screenHeight));
         this.setMaximumSize(new Dimension(screenWidth, screenHeight));
-        this.setBackground(Color.black);
+        this.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.setDoubleBuffered(true);
         this.keyH = new KeyHandler();
         this.slime = new Slime(this, keyH);
@@ -75,7 +83,10 @@ public class AdventurePanel extends JPanel implements Runnable {
     
     @Override
     public void run() {
+        // The game will update 60 times a second. Meaning one billion nanoseconds / 60.
         double drawInterval = 1000000000 / 60;
+        
+        // The next time the game needs to update is the current time + (1 second / 60)
         double nextDrawTime = System.nanoTime() + drawInterval;
         
         while(gameState == GameState.ADVENTURE) {
@@ -85,15 +96,21 @@ public class AdventurePanel extends JPanel implements Runnable {
             repaint();
             
             try {
+                // After the game updates, calculate how much time remains until the next update.
                 double remainingTime = nextDrawTime - System.nanoTime(); 
                 remainingTime /= 1000000;
                 
+                
+                // If the remaining time is 0, (meaning it took more than 0.01667 seconds to process the previous frame),
+                // then set the remaining time to 0.
                 if(remainingTime < 0) {
                     remainingTime = 0;
                 }
                 
+                // Wait for the remaining time before running the loop again.
                 Thread.sleep((long) remainingTime);
                 
+                // Update the next update time.
                 nextDrawTime += drawInterval;
             } catch(InterruptedException e) {
                 

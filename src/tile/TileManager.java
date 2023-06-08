@@ -1,7 +1,9 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Author: Peter Lee
+ * ID: 18040190
+ * PDC Assignment 2
  */
+
 package tile;
 
 import AIKEN.AdventurePanel;
@@ -9,10 +11,10 @@ import java.awt.Graphics2D;
 import javax.swing.ImageIcon;
 
 /**
- *
+ * This class manages an array of tiles.
  * @author hunub
  */
-public class TileManager {
+public final class TileManager {
     AdventurePanel ap;
     Tile[] tile;
     
@@ -24,6 +26,7 @@ public class TileManager {
         getTileImage();
     }
     
+    // Populate array with tiles.
     public void getTileImage() {
         tile[0] = new Tile();
         tile[0].image = new ImageIcon("./tiles/grass_tile.png").getImage();
@@ -35,6 +38,7 @@ public class TileManager {
         tile[3].image = new ImageIcon("./tiles/money_tile.png").getImage();
     }
     
+    // Draw tiles on the screen based on the width and height of the screen, and the size of each tile.
     public void draw(Graphics2D g2) {
         int x = ap.tileSize, y = ap.tileSize; 
         
